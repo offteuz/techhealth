@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -39,6 +41,15 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "medic")
+    private Set<Consultation> consultationsAsMedic = new HashSet<>();
+
+    @OneToMany(mappedBy = "nurse")
+    private Set<Consultation> consultationsAsNurse = new HashSet<>();
+
+    @OneToMany(mappedBy = "patient")
+    private Set<Consultation> consultationsAsPatient = new HashSet<>();
 
     @Embedded
     private Audit audit = new Audit();
@@ -74,6 +85,9 @@ public class User {
                 ", password='" + password + '\'' +
                 ", address=" + address +
                 ", role=" + role +
+                ", consultationsAsMedic=" + consultationsAsMedic +
+                ", consultationsAsNurse=" + consultationsAsNurse +
+                ", consultationsAsPatient=" + consultationsAsPatient +
                 ", audit=" + audit +
                 '}';
     }
