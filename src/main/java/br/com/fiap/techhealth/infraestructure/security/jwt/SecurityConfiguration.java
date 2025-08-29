@@ -23,8 +23,8 @@ public class SecurityConfiguration {
     }
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
-            "/api/auth/login",   // Url para fazer login
-            "/api/auth/register" // Url para criar um usuário
+            "/api/auth/login",
+            "/api/auth/register"
     };
 
     // Endpoints que requerem autenticação para serem acessados
@@ -34,23 +34,45 @@ public class SecurityConfiguration {
 
     // Endpoints que só podem ser acessador por usuários com permissão de "médico(a)"
     public static final String [] ENDPOINTS_DOCTOR = {
+            // Test
             "/api/test/doctor",
+
+            // User
             "/api/user/find-all",
             "/api/user/find-by-id/{idUser}",
             "/api/user/delete/{idUser}",
-            "/api/user/update/{idUser}"
+            "/api/user/update/{idUser}",
+
+            // Consultation
+            "/api/consultation/find-all",
+            "/api/consultation/find-by-id/{idConsultation}",
+            "/api/consultation/update/{idConsultation}",
     };
 
     // Endpoints que só podem ser acessador por usuários com permissão de "enfermeiro(a)"
     public static final String [] ENDPOINTS_NURSE = {
+            // Test
             "/api/test/nurse",
+
+            // User
             "/api/user/find-all",
-            "/api/user/find-by-id"
+            "/api/user/find-by-id",
+
+            // Consultation
+            "/api/consultation/create",
+            "/api/consultation/find-all",
+            "/api/consultation/find-by-id/{idConsultation}",
+            "/api/consultation/delete/{idConsultation}"
     };
 
     // Endpoints que só podem ser acessador por usuários com permissão de "paciente"
     public static final String [] ENDPOINTS_PATIENT = {
+            // Test
             "/api/test/patient",
+
+            // Consultation
+            "/api/consultation/find-all/me",
+            "/api/consultation/find-by-id/me/{idConsultation}"
     };
 
     @Bean
@@ -78,5 +100,4 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }
