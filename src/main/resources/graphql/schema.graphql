@@ -1,0 +1,45 @@
+scalar LocalDateTime
+
+type User {
+    id: ID!
+    name: String!
+    userName: String!
+    email: String!
+    role: String!
+    consultationsAsMedic: [Consultation!]
+    consultationsAsNurse: [Consultation!]
+    consultationsAsPatient: [Consultation!]
+}
+
+type Consultation {
+    id: ID!
+    patientReport: String!
+    consultationDate: LocalDateTime!
+    medic: User!
+    nurse: User!
+    patient: User!
+}
+
+# Queries disponíveis
+type Query {
+    consultationsByPatient(patientId: ID!): [Consultation!]!
+    futureConsultations(patientId: ID!): [Consultation!]!
+    consultationById(id: ID!): Consultation
+}
+
+# Mutations para agendamento
+type Mutation {
+    createConsultation(
+        patientId: ID!,
+        medicId: ID!,
+        nurseId: ID!,
+        report: String!,
+        date: LocalDateTime!
+    ): Consultation!
+
+    updateConsultation(
+        id: ID!,
+        report: String,
+        date: LocalDateTime
+    ): Consultation!
+}
