@@ -2,6 +2,7 @@ package br.com.fiap.techhealth.infraestructure.security.jwt;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,7 +25,7 @@ public class SecurityConfiguration {
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
             "/api/auth/login",
-            "/api/auth/register"
+            "/api/auth/register",
     };
 
     // Endpoints que requerem autenticação para serem acessados
@@ -81,12 +82,13 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
+                        .requestMatchers("/graphql", "/graphiql/**", "/vendor/**").permitAll()
+                        .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
                     .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
                     .requestMatchers(ENDPOINTS_DOCTOR).hasRole("DOCTOR")
                     .requestMatchers(ENDPOINTS_NURSE).hasRole("NURSE")
                     .requestMatchers(ENDPOINTS_PATIENT).hasRole("PATIENT")
-                    .anyRequest().denyAll())
+                    .anyRequest().permitAll())
                 .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

@@ -26,6 +26,11 @@ public class ConsultationGraphQLController {
     }
 
     @QueryMapping
+    public String hello() {
+        return "Hello GraphQL!";
+    }
+
+    @QueryMapping
     public List<Consultation> consultationsByPatient(@Argument Long patientId) {
         User patient = userRepository.findById(patientId)
                 .orElseThrow(() -> new UsernameNotFoundException("Paciente não encontrado."));

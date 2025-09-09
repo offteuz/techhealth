@@ -1,4 +1,4 @@
-scalar LocalDateTime
+scalar DateTime
 
 type User {
     id: ID!
@@ -14,7 +14,7 @@ type User {
 type Consultation {
     id: ID!
     patientReport: String!
-    consultationDate: LocalDateTime!
+    consultationDate: DateTime!
     medic: User!
     nurse: User!
     patient: User!
@@ -22,6 +22,7 @@ type Consultation {
 
 # Queries disponíveis
 type Query {
+    hello: String
     consultationsByPatient(patientId: ID!): [Consultation!]!
     futureConsultations(patientId: ID!): [Consultation!]!
     consultationById(id: ID!): Consultation
@@ -34,12 +35,12 @@ type Mutation {
         medicId: ID!,
         nurseId: ID!,
         report: String!,
-        date: LocalDateTime!
+        date: DateTime!
     ): Consultation!
 
     updateConsultation(
         id: ID!,
         report: String,
-        date: LocalDateTime
+        date: DateTime
     ): Consultation!
 }

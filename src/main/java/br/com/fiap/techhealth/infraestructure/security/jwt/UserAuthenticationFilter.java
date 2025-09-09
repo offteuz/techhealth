@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class UserAuthenticationFilter extends OncePerRequestFilter {
@@ -34,6 +35,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (checkIfEndpointIsNotPublic(request)) {
             String token = recoveryToken(request);
+
             if (token != null) {
                 String subject = jwtTokenService.getSubjectFromToken(token);
                 User user = userRepository.findByEmail(subject).get();
@@ -44,7 +46,9 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                throw new RuntimeException("O token está ausente.");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token ausente");
+                //throw new RuntimeException("O token está ausente.");
             }
         }
         filterChain.doFilter(request, response);
