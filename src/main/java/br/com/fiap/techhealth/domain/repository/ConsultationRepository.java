@@ -4,6 +4,7 @@ import br.com.fiap.techhealth.domain.model.Consultation;
 import br.com.fiap.techhealth.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ConsultationRepository extends JpaRepository<Consultation, Long> {
@@ -11,4 +12,9 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
     List<Consultation> findByPatient(User patient);
 
     Consultation findByPatientAndId(User patient, Consultation consultation);
+
+    List<Consultation> findByPatientId(Long patientId);
+
+    List<Consultation> findByPatientIdAndConsultationDateAfter(Long patientId, LocalDateTime date);
+
 }

@@ -1,46 +1,67 @@
 scalar DateTime
 
-type User {
+type UserResponse {
     id: ID!
     name: String!
     userName: String!
     email: String!
+    address: Address
     role: String!
-    consultationsAsMedic: [Consultation!]
-    consultationsAsNurse: [Consultation!]
-    consultationsAsPatient: [Consultation!]
+    audit: Audit
+}
+ type Address {
+     cep: String!
+     street: String!
+     number: String!
+     neighborhood: String!
+     city: String!
+     state: String!
+     country: String!
+ }
+
+type Audit {
+    createdBy: String
+    createdAt: DateTime
+    updatedBy: String
+    updatedAt: DateTime
 }
 
-type Consultation {
+type ConsultationResponse {
     id: ID!
     patientReport: String!
     consultationDate: DateTime!
-    medic: User!
-    nurse: User!
-    patient: User!
+    medic: UserResponse!
+    nurse: UserResponse!
+    patient: UserResponse!
+    audit: Audit
+}
+
+# Declaração do tipo de entrada
+input ConsultationRequest {
+    patientId: ID!
+    medicId: ID!
+    nurseId: ID!
+    report: String!
+    date: DateTime!
+}
+
+input ConsultationUpdateRequest {
+    report: String
+    date: DateTime
 }
 
 # Queries disponíveis
 type Query {
     hello: String
-    consultationsByPatient(patientId: ID!): [Consultation!]!
-    futureConsultations(patientId: ID!): [Consultation!]!
-    consultationById(id: ID!): Consultation
+    consultationByPatient(patientId: ID!): ConsultationResponse
+    myConsultations: [ConsultationResponse!]!
+    futureConsultations(patientId: ID!): [ConsultationResponse!]!
+    consultationById(id: ID!): ConsultationResponse
 }
 
 # Mutations para agendamento
 type Mutation {
-    createConsultation(
-        patientId: ID!,
-        medicId: ID!,
-        nurseId: ID!,
-        report: String!,
-        date: DateTime!
-    ): Consultation!
-
-    updateConsultation(
-        id: ID!,
-        report: String,
-        date: DateTime
-    ): Consultation!
+    createConsultation(dto: ConsultationRequest!): ConsultationResponse!
+    updateConsultation(id: ID!,dto: ConsultationUpdateRequest!): ConsultationResponse!
+    deleteConsultation(id: ID!): Boolean
 }

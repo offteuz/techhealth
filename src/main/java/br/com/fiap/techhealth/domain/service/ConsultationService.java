@@ -7,6 +7,7 @@ import br.com.fiap.techhealth.domain.model.Consultation;
 import br.com.fiap.techhealth.domain.model.User;
 import br.com.fiap.techhealth.domain.repository.ConsultationRepository;
 import br.com.fiap.techhealth.domain.repository.UserRepository;
+import br.com.fiap.techhealth.exception.AccessDeniedGraphQLException;
 import br.com.fiap.techhealth.exception.ConsultationNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -49,15 +50,15 @@ public class ConsultationService {
                 .toList();
     }
 
-    public ConsultationResponseDTO findConsultationsForPatientById(Authentication authentication, Long idConsultation) throws AccessDeniedException {
+    public ConsultationResponseDTO findConsultationsForPatientById(Authentication authentication, Long idConsultation) throws AccessDeniedGraphQLException {
         String userEmail = authentication.getName();
 
         Consultation consultation = consultationRepository.findById(idConsultation)
                 .orElseThrow(() -> new ConsultationNotFoundException("Consulta não encontrada."));
 
-        if (!consultation.getPatient().getEmail().equals(userEmail)) {
-            throw new AccessDeniedException("Você não tem permissão para acessar esta consulta.");
-        }
+//        if (!consultation.getPatient().getEmail().trim().equalsIgnoreCase(userEmail.trim())) {
+//            throw new AccessDeniedGraphQLException("Você não tem permissão para acessar esta consulta.");
+//        }
 
         return new ConsultationResponseDTO(consultation);
     }

@@ -5,6 +5,8 @@ import br.com.fiap.techhealth.domain.model.Consultation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 public record ConsultationResponseDTO(
 
@@ -13,7 +15,7 @@ public record ConsultationResponseDTO(
         String patientReport,
 
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
-        LocalDateTime consultationDate,
+        OffsetDateTime consultationDate,
 
         UserResponseDTO medic,
 
@@ -28,7 +30,10 @@ public record ConsultationResponseDTO(
                 this(
                         consultation.getId(),
                         consultation.getPatientReport(),
-                        consultation.getConsultationDate(),
+                        consultation.getConsultationDate() != null
+                                ? consultation.getConsultationDate().atOffset(ZoneOffset.ofHours(-3)) // São Paulo
+                                : null,
+                        //OffsetDateTime.from(consultation.getConsultationDate()),
                         new UserResponseDTO(consultation.getMedic()),
                         new UserResponseDTO(consultation.getNurse()),
                         new UserResponseDTO(consultation.getPatient()),

@@ -1,28 +1,27 @@
 package br.com.fiap.techhealth.infraestructure.controller;
 
-import br.com.fiap.techhealth.domain.model.Consultation;
-import br.com.fiap.techhealth.domain.model.User;
-import br.com.fiap.techhealth.domain.repository.ConsultationRepository;
-import br.com.fiap.techhealth.domain.repository.UserRepository;
-import br.com.fiap.techhealth.exception.ConsultationNotFoundException;
+import br.com.fiap.techhealth.application.dto.request.ConsultationRequestDTO;
+import br.com.fiap.techhealth.application.dto.response.ConsultationResponseDTO;
+import br.com.fiap.techhealth.domain.service.ConsultationService;
+import jakarta.annotation.Nullable;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Controller
 public class ConsultationGraphQLController {
 
-    private final ConsultationRepository consultationRepository;
-    private final UserRepository userRepository;
+    private final ConsultationService consultationService;
 
-    public ConsultationGraphQLController(ConsultationRepository consultationRepository, UserRepository userRepository) {
-        this.consultationRepository = consultationRepository;
-        this.userRepository = userRepository;
+    public ConsultationGraphQLController(ConsultationService consultationService) {
+        this.consultationService = consultationService;
     }
 
     @QueryMapping
@@ -31,64 +30,47 @@ public class ConsultationGraphQLController {
     }
 
     @QueryMapping
-    public List<Consultation> consultationsByPatient(@Argument Long patientId) {
-        User patient = userRepository.findById(patientId)
-                .orElseThrow(() -> new UsernameNotFoundException("Paciente não encontrado."));
-        return consultationRepository.findByPatient(patient);
+    public ConsultationResponseDTO consultationByPatient(
+            @Argument Long patientId,
+            Authentication authentication
+    ) {
+        return consultationService.findConsultationsForPatientById(authentication, patientId);
     }
 
     @QueryMapping
-    public List<Consultation> futureConsultations(@Argument Long patientId) {
-        User patient = userRepository.findById(patientId)
-                .orElseThrow(() -> new UsernameNotFoundException("Paciente não encontrado."));
-        return consultationRepository.findByPatient(patient).stream()
-                .filter(c -> c.getConsultationDate().isAfter(LocalDateTime.now()))
+    public List<ConsultationResponseDTO> myConsultations(Authentication authentication) {
+        return consultationService.findConsultationsForPatient(authentication);
+    }
+
+    @QueryMapping
+    public List<ConsultationResponseDTO> futureConsultations(@Argument Long patientId) {
+        ZoneOffset saoPauloOffSet = ZoneOffset.ofHours(-3);
+        OffsetDateTime now = OffsetDateTime.now(saoPauloOffSet);
+        return consultationService.findAll()
+                .stream()
+                .filter(c -> c.patient().id().equals(patientId))
+                .filter(c -> c.consultationDate().isAfter(now))
                 .toList();
     }
 
     @QueryMapping
-    public Consultation consultationById(@Argument Long id) {
-        return consultationRepository.findById(id)
-                .orElse(null);
+    public ConsultationResponseDTO consultationById(@Argument Long id) {
+        return consultationService.findById(id);
     }
 
     @MutationMapping
-    public Consultation createConsultation(
-            @Argument Long patientId,
-            @Argument Long medicId,
-            @Argument Long nurseId,
-            @Argument String report,
-            @Argument LocalDateTime date
-    ) {
-        User patient = userRepository.findById(patientId)
-                .orElseThrow(() -> new UsernameNotFoundException("Paciente não encontrado."));
-        User medic = userRepository.findById(medicId)
-                .orElseThrow(() -> new UsernameNotFoundException("Médico não encontrado."));
-        User nurse = userRepository.findById(nurseId)
-                .orElseThrow(() -> new UsernameNotFoundException("Enfermeiro não encontrado."));
-
-        Consultation consultation = new Consultation();
-        consultation.setPatient(patient);
-        consultation.setMedic(medic);
-        consultation.setNurse(nurse);
-        consultation.setPatientReport(report);
-        consultation.setConsultationDate(date);
-
-        return consultationRepository.save(consultation);
+    public ConsultationResponseDTO createConsultation(@Argument ConsultationRequestDTO dto) {
+        return consultationService.create(dto);
     }
 
     @MutationMapping
-    public Consultation updateConsultation(
-            @Argument Long id,
-            @Argument String report,
-            @Argument LocalDateTime date
-    ) {
-        Consultation consultation = consultationRepository.findById(id)
-                .orElseThrow(() -> new ConsultationNotFoundException("Consulta não encontrada."));
+    public ConsultationResponseDTO updateConsultation(@Argument Long id, @Argument ConsultationRequestDTO dto) {
+        return consultationService.update(id, dto);
+    }
 
-        if (report != null) consultation.setPatientReport(report);
-        if (date != null) consultation.setConsultationDate(date);
-
-        return consultationRepository.save(consultation);
+    @MutationMapping
+    public Boolean deleteConsultation(@Argument Long id) {
+        consultationService.delete(id);
+        return true;
     }
 }

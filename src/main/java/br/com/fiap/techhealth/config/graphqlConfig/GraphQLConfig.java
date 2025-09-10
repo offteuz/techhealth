@@ -1,6 +1,7 @@
 package br.com.fiap.techhealth.config.graphqlConfig;
 
 import graphql.scalars.ExtendedScalars;
+import graphql.schema.GraphQLScalarType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
@@ -12,5 +13,6 @@ public class GraphQLConfig {
     public RuntimeWiringConfigurer runtimeWiringConfigurer() {
         return builder -> builder.scalar(ExtendedScalars.DateTime);
     }
+
 }
 
