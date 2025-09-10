@@ -38,11 +38,11 @@ type ConsultationResponse {
 
 # Declaração do tipo de entrada
 input ConsultationRequest {
-    patientId: ID!
-    medicId: ID!
-    nurseId: ID!
-    report: String!
-    date: DateTime!
+    idPatient: ID!
+    idMedic: ID!
+    idNurse: ID!
+    patientReport: String!
+    consultationDate: DateTime!
 }
 
 input ConsultationUpdateRequest {
@@ -62,6 +62,6 @@ type Query {
 # Mutations para agendamento
 type Mutation {
     createConsultation(dto: ConsultationRequest!): ConsultationResponse!
-    updateConsultation(id: ID!,dto: ConsultationUpdateRequest!): ConsultationResponse!
+    updateConsultation(id: ID!, dto: ConsultationUpdateRequest!): ConsultationResponse!
     deleteConsultation(id: ID!): Boolean
 }

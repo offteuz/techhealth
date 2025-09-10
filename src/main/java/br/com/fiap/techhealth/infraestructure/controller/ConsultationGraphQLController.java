@@ -3,6 +3,7 @@ package br.com.fiap.techhealth.infraestructure.controller;
 import br.com.fiap.techhealth.application.dto.request.ConsultationRequestDTO;
 import br.com.fiap.techhealth.application.dto.response.ConsultationResponseDTO;
 import br.com.fiap.techhealth.domain.service.ConsultationService;
+import br.com.fiap.techhealth.exception.ConsultationNotFoundException;
 import jakarta.annotation.Nullable;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -70,7 +71,11 @@ public class ConsultationGraphQLController {
 
     @MutationMapping
     public Boolean deleteConsultation(@Argument Long id) {
-        consultationService.delete(id);
-        return true;
+        try {
+            consultationService.delete(id);
+            return true;
+        } catch (ConsultationNotFoundException e) {
+            return false;
+        }
     }
 }

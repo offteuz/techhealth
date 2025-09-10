@@ -24,7 +24,7 @@ public class Consultation {
     @Column(name = "id_consultation")
     @Id
     @SequenceGenerator(name = "seq_consultation", sequenceName = "seq_consultation", allocationSize = 1)
-    @GeneratedValue(generator = "seq_consultation", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "seq_consultation", strategy = GenerationType.IDENTITY /*SEQUENCE*/)
     private Long id;
 
     @Column(name = "patient_report", nullable = false)

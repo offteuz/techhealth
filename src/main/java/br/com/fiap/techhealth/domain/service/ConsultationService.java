@@ -4,6 +4,7 @@ import br.com.fiap.techhealth.application.dto.request.ConsultationRequestDTO;
 import br.com.fiap.techhealth.application.dto.response.ConsultationResponseDTO;
 import br.com.fiap.techhealth.application.mapper.ConsultationMapper;
 import br.com.fiap.techhealth.domain.model.Consultation;
+import br.com.fiap.techhealth.domain.model.ConsultationStatus;
 import br.com.fiap.techhealth.domain.model.User;
 import br.com.fiap.techhealth.domain.repository.ConsultationRepository;
 import br.com.fiap.techhealth.domain.repository.UserRepository;
@@ -28,12 +29,6 @@ public class ConsultationService {
         this.consultationRepository = consultationRepository;
         this.userRepository = userRepository;
         this.consultationMapper = consultationMapper;
-    }
-
-    public ConsultationResponseDTO create(ConsultationRequestDTO dto) {
-        Consultation consultation = consultationMapper.toModel(dto);
-
-        return new ConsultationResponseDTO(consultationRepository.save(consultation));
     }
 
     public ConsultationResponseDTO findById(Long idConsultation) {
@@ -76,11 +71,12 @@ public class ConsultationService {
                 .toList();
     }
 
-    public void delete(Long idConsultation) {
-        Consultation consultation = consultationRepository.findById(idConsultation)
-                .orElseThrow(ConsultationNotFoundException::new);
+    public ConsultationResponseDTO create(ConsultationRequestDTO dto) {
+        Consultation consultation = consultationMapper.toModel(dto);
 
-        consultationRepository.delete(consultation);
+        consultation.setStatus(ConsultationStatus.SCHEDULED);
+
+        return new ConsultationResponseDTO(consultationRepository.save(consultation));
     }
 
     public ConsultationResponseDTO update(Long idConsultation, ConsultationRequestDTO dto) {
@@ -90,5 +86,12 @@ public class ConsultationService {
         consultationMapper.updateFromDto(dto, consultation);
 
         return new ConsultationResponseDTO(consultationRepository.save(consultation));
+    }
+
+    public void delete(Long idConsultation) {
+        Consultation consultation = consultationRepository.findById(idConsultation)
+                .orElseThrow(ConsultationNotFoundException::new);
+
+        consultationRepository.delete(consultation);
     }
 }
