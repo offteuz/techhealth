@@ -1,5 +1,6 @@
 package br.com.fiap.techhealth.domain.model;
 
+import br.com.fiap.techhealth.application.dto.response.AuditResponseDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class Audit {
+public class Audit extends AuditResponseDTO {
 
     @CreatedBy
     @Column(updatable = false)

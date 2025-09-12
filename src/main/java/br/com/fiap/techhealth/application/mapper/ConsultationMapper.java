@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 @Mapper(componentModel = "spring",
-        uses = {UserMapperHelper.class},
+        uses = { UserMapperHelper.class, AuditMapper.class, UserMapperHelper.class },
         unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface ConsultationMapper {
 
@@ -21,15 +21,15 @@ public interface ConsultationMapper {
     @Mapping(source = "consultationDate", target = "consultationDate") // MapStruct vai usar o método abaixo
     Consultation toModel (ConsultationRequestDTO dto);
 
+    @Mapping(source = "consultationDate", target = "consultationDate")
     ConsultationResponseDTO toResponseDTO(Consultation consultation);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromDto(ConsultationRequestDTO dto, @MappingTarget Consultation consultation);
 
+    // LocalDateTime -> OffsetDateTime
     default OffsetDateTime map(LocalDateTime value) {
-        return value != null ? value.atOffset(ZoneOffset.UTC) : null;
-        // ou outro fuso horário se necessário
+        return value != null ? value.atOffset(ZoneOffset.ofHours(-3)) : null;
     }
-
 
 }

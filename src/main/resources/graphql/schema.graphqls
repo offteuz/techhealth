@@ -46,8 +46,8 @@ input ConsultationRequest {
 }
 
 input ConsultationUpdateRequest {
-    report: String
-    date: DateTime
+    patientReport: String
+    consultationDate: DateTime
 }
 
 # Queries disponíveis

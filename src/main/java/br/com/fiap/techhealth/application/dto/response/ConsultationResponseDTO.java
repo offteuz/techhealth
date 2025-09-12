@@ -23,7 +23,7 @@ public record ConsultationResponseDTO(
 
         UserResponseDTO patient,
 
-        Audit audit
+        AuditResponseDTO audit
 ) {
 
         public ConsultationResponseDTO(Consultation consultation) {
