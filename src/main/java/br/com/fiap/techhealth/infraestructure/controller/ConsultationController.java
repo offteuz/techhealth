@@ -21,45 +21,45 @@ public class ConsultationController {
         this.consultationService = consultationService;
     }
 
-    @PostMapping("/consultation/create")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ConsultationResponseDTO create(@Valid @RequestBody ConsultationRequestDTO dto) {
-        return consultationService.create(dto);
-    }
+//    @PostMapping("/consultation/create")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public ConsultationResponseDTO create(@Valid @RequestBody ConsultationRequestDTO dto) {
+//        return consultationService.create(dto);
+//    }
 
-    @GetMapping("/consultation/find-by-id/{idConsultation}")
-    @ResponseStatus(HttpStatus.OK)
-    public ConsultationResponseDTO findById(@PathVariable Long idConsultation) {
-        return consultationService.findById(idConsultation);
-    }
+//    @GetMapping("/consultation/find-by-id/{idConsultation}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public ConsultationResponseDTO findById(@PathVariable Long idConsultation) {
+//        return consultationService.findById(idConsultation);
+//    }
 
-    @GetMapping("/consultation/find-all")
-    @ResponseStatus(HttpStatus.OK)
-    public List<ConsultationResponseDTO> findAll() {
-        return consultationService.findAll();
-    }
+//    @GetMapping("/consultation/find-all")
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<ConsultationResponseDTO> findAll() {
+//        return consultationService.findAll();
+//    }
 
-    @GetMapping("/consultation/find-by-id/me/{idConsultation}")
-    @ResponseStatus(HttpStatus.OK)
-    public ConsultationResponseDTO findConsultationsForPatientById(Authentication authentication, @PathVariable Long idConsultation) throws AccessDeniedException {
-        return consultationService.findConsultationsForPatientById(authentication, idConsultation);
-    }
+//    @GetMapping("/consultation/find-by-id/me/{idConsultation}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public ConsultationResponseDTO findConsultationsForPatientById(Authentication authentication, @PathVariable Long idConsultation) throws AccessDeniedException {
+//        return consultationService.findConsultationsForPatientById(authentication, idConsultation);
+//    }
 
-    @GetMapping("/consultation/find-all/me")
-    @ResponseStatus(HttpStatus.OK)
-    public List<ConsultationResponseDTO> findConsultationsForPatient(Authentication authentication) {
-        return consultationService.findConsultationsForPatient(authentication);
-    }
+//    @GetMapping("/consultation/find-all/me")
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<ConsultationResponseDTO> findConsultationsForPatient(Authentication authentication) {
+//        return consultationService.findConsultationsForPatient(authentication);
+//    }
 
-    @DeleteMapping("/consultation/delete/{idConsultation}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long idConsultation) {
-        consultationService.delete(idConsultation);
-    }
+//    @DeleteMapping("/consultation/delete/{idConsultation}")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public void delete(@PathVariable Long idConsultation) {
+//        consultationService.delete(idConsultation);
+//    }
 
-    @PatchMapping("/consultation/update/{idConsultation}")
-    @ResponseStatus(HttpStatus.OK)
-    public ConsultationResponseDTO update(@PathVariable Long idConsultation, @Valid @RequestBody ConsultationRequestDTO dto) {
-        return consultationService.update(idConsultation, dto);
-    }
+//    @PatchMapping("/consultation/update/{idConsultation}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public ConsultationResponseDTO update(@PathVariable Long idConsultation, @Valid @RequestBody ConsultationRequestDTO dto) {
+//        return consultationService.update(idConsultation, dto);
+//    }
 }

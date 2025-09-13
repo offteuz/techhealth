@@ -9,7 +9,7 @@ type UserResponse {
     role: String!
     audit: Audit
 }
- type Address {
+type Address {
      cep: String!
      street: String!
      number: String!
@@ -17,7 +17,7 @@ type UserResponse {
      city: String!
      state: String!
      country: String!
- }
+}
 
 type Audit {
     createdBy: String
@@ -52,9 +52,8 @@ input ConsultationUpdateRequest {
 
 # Queries disponíveis
 type Query {
-    hello: String
-    consultationByPatient(patientId: ID!): ConsultationResponse
-    myConsultations: [ConsultationResponse!]!
+    consultationByPatient(patientId: ID!): [ConsultationResponse!]!
+    getConsultationsForPatient: [ConsultationResponse!]!
     futureConsultations(patientId: ID!): [ConsultationResponse!]!
     consultationById(id: ID!): ConsultationResponse
 }

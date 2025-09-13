@@ -3,17 +3,15 @@ package br.com.fiap.techhealth.infraestructure.controller;
 import br.com.fiap.techhealth.application.dto.request.ConsultationRequestDTO;
 import br.com.fiap.techhealth.application.dto.response.ConsultationResponseDTO;
 import br.com.fiap.techhealth.domain.service.ConsultationService;
+import br.com.fiap.techhealth.exception.AccessDeniedGraphQLException;
 import br.com.fiap.techhealth.exception.ConsultationNotFoundException;
-import jakarta.annotation.Nullable;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 
 @Controller
@@ -26,12 +24,8 @@ public class ConsultationGraphQLController {
     }
 
     @QueryMapping
-    public String hello() {
-        return "Hello GraphQL!";
-    }
-
-    @QueryMapping
-    public ConsultationResponseDTO consultationByPatient(
+    @PreAuthorize("hasRole('PATIENT')")
+    public List<ConsultationResponseDTO> consultationByPatient(
             @Argument Long patientId,
             Authentication authentication
     ) {
@@ -39,40 +33,56 @@ public class ConsultationGraphQLController {
     }
 
     @QueryMapping
-    public List<ConsultationResponseDTO> myConsultations(Authentication authentication) {
+    @PreAuthorize("hasRole('PATIENT')")
+    public List<ConsultationResponseDTO> getConsultationsForPatient(Authentication authentication) {
         return consultationService.findConsultationsForPatient(authentication);
     }
 
     @QueryMapping
-    public List<ConsultationResponseDTO> futureConsultations(@Argument Long patientId) {
-        ZoneOffset saoPauloOffSet = ZoneOffset.ofHours(-3);
-        OffsetDateTime now = OffsetDateTime.now(saoPauloOffSet);
-        return consultationService.findAll()
-                .stream()
-                .filter(c -> c.patient().id().equals(patientId))
-                .filter(c -> c.consultationDate().isAfter(now))
-                .toList();
+    @PreAuthorize("hasRole('PATIENT') or hasRole('MEDIC') or hasRole('NURSE')")
+    public List<ConsultationResponseDTO> futureConsultations(
+            @Argument Long patientId,
+            Authentication authentication
+    ) {
+        return consultationService.findFutureConsultations(authentication, patientId);
     }
 
     @QueryMapping
-    public ConsultationResponseDTO consultationById(@Argument Long id) {
-        return consultationService.findById(id);
+    @PreAuthorize("hasRole('PATIENT') or hasRole('MEDIC') or hasRole('NURSE')")
+    public ConsultationResponseDTO consultationById(
+            Authentication authentication,
+            @Argument Long id
+    ) {
+        return consultationService.findById(authentication, id);
     }
 
     @MutationMapping
-    public ConsultationResponseDTO createConsultation(@Argument ConsultationRequestDTO dto) {
-        return consultationService.create(dto);
+    @PreAuthorize("hasRole('MEDIC') or hasRole('NURSE')")
+    public ConsultationResponseDTO createConsultation(
+            Authentication authentication,
+            @Argument ConsultationRequestDTO dto
+    ) {
+        return consultationService.create(authentication, dto);
     }
 
     @MutationMapping
-    public ConsultationResponseDTO updateConsultation(@Argument Long id, @Argument ConsultationRequestDTO dto) {
-        return consultationService.update(id, dto);
+    @PreAuthorize("hasRole('MEDIC') or hasRole('NURSE')")
+    public ConsultationResponseDTO updateConsultation(
+            Authentication authentication,
+            @Argument Long id,
+            @Argument ConsultationRequestDTO dto
+    ) {
+        return consultationService.update(authentication, id, dto);
     }
 
     @MutationMapping
-    public Boolean deleteConsultation(@Argument Long id) {
+    @PreAuthorize("hasRole('MEDIC')")
+    public Boolean deleteConsultation(
+            Authentication authentication,
+            @Argument Long id
+    ) {
         try {
-            consultationService.delete(id);
+            consultationService.delete(authentication, id);
             return true;
         } catch (ConsultationNotFoundException e) {
             return false;

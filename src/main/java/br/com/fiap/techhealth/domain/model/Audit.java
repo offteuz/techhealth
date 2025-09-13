@@ -3,6 +3,8 @@ package br.com.fiap.techhealth.domain.model;
 import br.com.fiap.techhealth.application.dto.response.AuditResponseDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
@@ -19,7 +22,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class Audit extends AuditResponseDTO {
+public class Audit extends AuditResponseDTO{
 
     @CreatedBy
     @Column(updatable = false)
@@ -27,21 +30,21 @@ public class Audit extends AuditResponseDTO {
 
     @CreatedDate
     @Column(updatable = false)
-    private Instant createdIn;
+    private Instant createdAt;
 
     @LastModifiedBy
-    private String lastModifiedBy;
+    private String updatedBy;
 
     @LastModifiedDate
-    private Instant lastModifiedIn;
+    private Instant updatedAt;
 
     @Override
     public String toString() {
         return "Audit{" +
-                "createdBy=" + createdBy +
-                ", createdIn=" + createdIn +
-                ", lastModifiedBy=" + lastModifiedBy +
-                ", lastModifiedIn=" + lastModifiedIn +
+                "createdBy=" + createdBy + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedBy=" + updatedBy + '\'' +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

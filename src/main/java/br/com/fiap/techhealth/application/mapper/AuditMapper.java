@@ -12,10 +12,10 @@ public class AuditMapper {
             return null;
         }
         return new AuditResponseDTO(
-                audit.getCreateBy(),
-                audit.getCreatedIn(),
-                audit.getLastModifiedBy(),
-                audit.getLastModifiedIn()
+                audit.getCreatedBy(),
+                audit.getCreatedAt(),
+                audit.getUpdatedBy(),
+                audit.getUpdatedAt()
         );
     }
 

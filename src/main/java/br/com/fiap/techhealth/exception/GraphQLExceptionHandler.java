@@ -13,18 +13,18 @@ public class GraphQLExceptionHandler extends DataFetcherExceptionResolverAdapter
     protected GraphQLError resolveToSingleError(Throwable ex, DataFetchingEnvironment env) {
         if (ex instanceof AccessDeniedGraphQLException) {
             return GraphqlErrorBuilder.newError(env)
-                    .message(ex.getMessage()) // "Você não tem permissão para acessar esta consulta."
+                    .message(ex.getMessage())
                     .errorType(graphql.ErrorType.DataFetchingException)
                     .build();
         }
 
         if (ex instanceof ConsultationNotFoundException) {
             return GraphqlErrorBuilder.newError(env)
-                    .message(ex.getMessage()) // "Consulta não encontrada."
+                    .message(ex.getMessage())
                     .errorType(graphql.ErrorType.DataFetchingException)
                     .build();
         }
 
-        return null; // outras exceções seguem o fluxo padrão
+        return null;
     }
 }

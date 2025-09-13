@@ -1,5 +1,6 @@
 package br.com.fiap.techhealth.application.dto.response;
 
+import br.com.fiap.techhealth.application.mapper.AuditMapper;
 import br.com.fiap.techhealth.domain.model.Audit;
 import br.com.fiap.techhealth.domain.model.Consultation;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -33,10 +34,10 @@ public record ConsultationResponseDTO(
                         consultation.getConsultationDate() != null
                                 ? consultation.getConsultationDate().atOffset(ZoneOffset.ofHours(-3)) // São Paulo
                                 : null,
-                        //OffsetDateTime.from(consultation.getConsultationDate()),
                         new UserResponseDTO(consultation.getMedic()),
                         new UserResponseDTO(consultation.getNurse()),
                         new UserResponseDTO(consultation.getPatient()),
+                        //AuditMapper.toDTO(consultation.getAudit())
                         consultation.getAudit()
                 );
         }

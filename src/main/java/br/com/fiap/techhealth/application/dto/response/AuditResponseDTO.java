@@ -12,22 +12,22 @@ import java.time.Instant;
 @AllArgsConstructor
 public class AuditResponseDTO {
 
-    private String createBy;
+    private String createdBy;
 
     @JsonFormat(
             shape = JsonFormat.Shape.STRING,
             pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
             timezone = "America/Sao_Paulo"
     )
-    private Instant createAt;
+    private Instant createdAt;
 
-    private String updateBy;
+    private String updatedBy;
 
     @JsonFormat(
             shape = JsonFormat.Shape.STRING,
             pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
             timezone = "America/Sao_Paulo"
     )
-    private Instant updateAt;
+    private Instant updatedAt;
 
 }
