@@ -3,11 +3,13 @@ package br.com.fiap.techhealth.domain.service;
 import br.com.fiap.techhealth.application.dto.request.ConsultationRequestDTO;
 import br.com.fiap.techhealth.application.dto.response.ConsultationResponseDTO;
 import br.com.fiap.techhealth.application.mapper.ConsultationMapper;
+import br.com.fiap.techhealth.config.kafka.producer.ConsultationKafkaProducer;
 import br.com.fiap.techhealth.domain.model.Consultation;
 import br.com.fiap.techhealth.domain.model.User;
 import br.com.fiap.techhealth.domain.repository.ConsultationRepository;
 import br.com.fiap.techhealth.domain.repository.UserRepository;
 import br.com.fiap.techhealth.exception.ConsultationNotFoundException;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -23,16 +25,25 @@ public class ConsultationService {
 
     private final ConsultationMapper consultationMapper;
 
-    public ConsultationService(ConsultationRepository consultationRepository, UserRepository userRepository, ConsultationMapper consultationMapper) {
+    private final ConsultationKafkaProducer consultationKafkaProducer;
+
+    public ConsultationService(ConsultationRepository consultationRepository, UserRepository userRepository, ConsultationMapper consultationMapper, ConsultationKafkaProducer consultationKafkaProducer) {
         this.consultationRepository = consultationRepository;
         this.userRepository = userRepository;
         this.consultationMapper = consultationMapper;
+        this.consultationKafkaProducer = consultationKafkaProducer;
     }
 
     public ConsultationResponseDTO create(ConsultationRequestDTO dto) {
         Consultation consultation = consultationMapper.toModel(dto);
 
-        return new ConsultationResponseDTO(consultationRepository.save(consultation));
+        Consultation consultationSaved = consultationRepository.save(consultation);
+
+        ConsultationResponseDTO responseDTO = new ConsultationResponseDTO(consultationSaved);
+
+        consultationKafkaProducer.sendMessage(responseDTO);
+
+        return responseDTO;
     }
 
     public ConsultationResponseDTO findById(Long idConsultation) {
@@ -88,6 +99,12 @@ public class ConsultationService {
 
         consultationMapper.updateFromDto(dto, consultation);
 
-        return new ConsultationResponseDTO(consultationRepository.save(consultation));
+        Consultation consultationSaved = consultationRepository.save(consultation);
+
+        ConsultationResponseDTO responseDTO = new ConsultationResponseDTO(consultationSaved);
+
+        consultationKafkaProducer.sendMessage(responseDTO);
+
+        return responseDTO;
     }
 }
