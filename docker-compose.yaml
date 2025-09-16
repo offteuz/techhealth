@@ -52,10 +52,26 @@ services:
     image: haravich/fake-smtp-server
     container_name: fake-smtp-server
     ports:
-      - "1081:1080"
+      - "1080:1080"
       - "1025:1025"
     volumes:
       - smtp_data:/var/mail
+
+  app:
+    container_name: techhealth-api
+    build: .
+    ports:
+      - "8090:8090"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - SPRING_MAIL_HOST=smtp-server
+      - SPRING_MAIL_PORT=1025
+    depends_on:
+      - database
+      - kafka
 
 volumes:
   pgdata: {}
