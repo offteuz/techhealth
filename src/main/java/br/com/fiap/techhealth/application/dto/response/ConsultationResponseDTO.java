@@ -1,6 +1,5 @@
 package br.com.fiap.techhealth.application.dto.response;
 
-import br.com.fiap.techhealth.domain.model.Audit;
 import br.com.fiap.techhealth.domain.model.Consultation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -21,18 +20,18 @@ public record ConsultationResponseDTO(
 
         UserResponseDTO patient,
 
-        Audit audit
+        AuditResponseDTO audit
 ) {
 
-        public ConsultationResponseDTO(Consultation consultation) {
-                this(
-                        consultation.getId(),
-                        consultation.getPatientReport(),
-                        consultation.getConsultationDate(),
-                        new UserResponseDTO(consultation.getMedic()),
-                        new UserResponseDTO(consultation.getNurse()),
-                        new UserResponseDTO(consultation.getPatient()),
-                        consultation.getAudit()
-                );
-        }
+    public ConsultationResponseDTO(Consultation consultation) {
+        this(
+                consultation.getId(),
+                consultation.getPatientReport(),
+                consultation.getConsultationDate(),
+                new UserResponseDTO(consultation.getMedic()),
+                new UserResponseDTO(consultation.getNurse()),
+                new UserResponseDTO(consultation.getPatient()),
+                new AuditResponseDTO(consultation.getAudit())
+        );
+    }
 }

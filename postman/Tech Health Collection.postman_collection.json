@@ -1,330 +1,696 @@
 {
 	"info": {
-		"_postman_id": "db7c90a3-05d5-4ff7-b315-67668d4445da",
-		"name": "Tech Health Collection",
+		"_postman_id": "2cf97028-d7d0-428c-bc72-fa52af512287",
+		"name": "Tech Health",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "35125827"
+		"_exporter_id": "40056059",
+		"_collection_link": "https://www.postman.com/vitor-silva-franca/workspace/vitor-silva-frana-tech-challenge-1-de-5-rest-api-para-gerenciamento-de-usurios/collection/40056059-2cf97028-d7d0-428c-bc72-fa52af512287?action=share&source=collection_link&creator=40056059"
 	},
 	"item": [
 		{
-			"name": "Register",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"name\": \"Nome Completo\",\r\n  \"userName\": \"usuario\",\r\n  \"email\": \"seu@email.com\",\r\n  \"password\": \"sua_senha\",\r\n  \"address\": {\r\n    \"cep\": \"12345678\",\r\n    \"street\": \"Rua Exemplo\",\r\n    \"number\": \"123\",\r\n    \"neighborhood\": \"Bairro\",\r\n    \"city\": \"Cidade\",\r\n    \"state\": \"Estado\",\r\n    \"country\": \"País\"\r\n  },\r\n  \"role\": \"DOCTOR\" // ou \"NURSE\" ou \"PATIENT\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8090/api/auth/register",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"auth",
-						"register"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Login",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "patientpatient{\r\n    \"email\": \"seu@email.com\",\r\n    \"password\": \"sua_senha\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8090/api/auth/login",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"auth",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "test",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+			"name": "Endpoints - DOCTOR",
+			"item": [
+				{
+					"name": "Registration/Login",
+					"item": [
 						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJUZWNoSGVhbHRoIEFQSSIsImlhdCI6MTc1NjM5NzA2OCwiZXhwIjoxNzU2NDA0MjY4LCJzdWIiOiJzZXVAZW1haWwuY29tIn0._1_6xCJ1D_CSvw23Jdw7rJoPClGl4r48powFFOdmwz0",
-							"type": "string"
+							"name": "Register Doctor",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Doutor Fulano\",\r\n  \"userName\": \"doctor\",\r\n  \"email\": \"doctor@email.com\",\r\n  \"password\": \"sua_senha\",\r\n  \"address\": {\r\n    \"cep\": \"12345678\",\r\n    \"street\": \"Rua Exemplo\",\r\n    \"number\": \"123\",\r\n    \"neighborhood\": \"Bairro\",\r\n    \"city\": \"Cidade\",\r\n    \"state\": \"Estado\",\r\n    \"country\": \"País\"\r\n  },\r\n  \"role\": \"DOCTOR\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/api/auth/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login Doctor",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{vault:bearer-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"doctor@email.com\",\r\n  \"password\": \"sua_senha\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/api/auth/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8090/api/test",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"test"
+				{
+					"name": "Consultation",
+					"item": [
+						{
+							"name": "Create Consultation",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{vault:json-web-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"mutation { createConsultation(dto: { idPatient: \\\"3\\\", idMedic: \\\"1\\\", idNurse: \\\"2\\\", patientReport: \\\"Relatório do paciente\\\", consultationDate: \\\"2024-09-20T10:00:00\\\" }) { id patientReport consultationDate medic { id name } nurse { id name } patient { id name } audit { createdAt } } }\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/graphql",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find All Consultation",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{vault:json-web-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"query { findAllConsultations { id patientReport consultationDate medic { id name email } nurse { id name email } patient { id name email } audit { createdAt updatedAt } } }\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/graphql",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find Consultation By Id",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{vault:json-web-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"query { consultationById(id: \\\"1\\\") { id patientReport consultationDate } }\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/graphql",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Consultation By Id",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{vault:json-web-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"mutation { updateConsultation(id: \\\"1\\\", dto: { patientReport: \\\"Novo relatório\\\", consultationDate: \\\"2024-09-21T11:00:00\\\" }) { id patientReport consultationDate } }\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/graphql",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find Old Consultations for a Patient",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{vault:json-web-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"query FindPastConsultationsByDoctor($patientId: ID!) { findPastConsultationsByDoctor(patientId: $patientId) { id consultationDate patientReport medic { name } patient { name } } }\",\r\n  \"variables\": {\r\n    \"patientId\": \"3\"\r\n  }\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/graphql",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find Future Consultations for a Patient",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{vault:json-web-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"query FindFutureConsultationsByDoctor($patientId: ID!) { findFutureConsultationsByDoctor(patientId: $patientId) { id patientReport consultationDate medic { id name email } nurse { id name email } patient { id name email } } }\",\r\n  \"variables\": {\r\n    \"patientId\": \"3\"\r\n  }\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/graphql",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						}
 					]
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Doctor Test",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+			"name": "Endpoints - NURSE",
+			"item": [
+				{
+					"name": "Registration/Login",
+					"item": [
 						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJUZWNoSGVhbHRoIEFQSSIsImlhdCI6MTc1NjM5NzA2OCwiZXhwIjoxNzU2NDA0MjY4LCJzdWIiOiJzZXVAZW1haWwuY29tIn0._1_6xCJ1D_CSvw23Jdw7rJoPClGl4r48powFFOdmwz0",
-							"type": "string"
+							"name": "Register Nurse",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Enfermeira Ciclana\",\r\n  \"userName\": \"nurse\",\r\n  \"email\": \"nurse@email.com\",\r\n  \"password\": \"sua_senha\",\r\n  \"address\": {\r\n    \"cep\": \"12345678\",\r\n    \"street\": \"Rua Exemplo\",\r\n    \"number\": \"123\",\r\n    \"neighborhood\": \"Bairro\",\r\n    \"city\": \"Cidade\",\r\n    \"state\": \"Estado\",\r\n    \"country\": \"País\"\r\n  },\r\n  \"role\": \"NURSE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/api/auth/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login Nurse",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{vault:bearer-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"nurse@email.com\",\r\n  \"password\": \"sua_senha\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/api/auth/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8090/api/test/doctor",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"test",
-						"doctor"
+				{
+					"name": "Consultation",
+					"item": [
+						{
+							"name": "Create Consultation",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{vault:json-web-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"mutation { createConsultation(dto: { idPatient: \\\"3\\\", idMedic: \\\"1\\\", idNurse: \\\"2\\\", patientReport: \\\"Relatório do paciente\\\", consultationDate: \\\"2024-09-20T10:00:00\\\" }) { id patientReport consultationDate medic { id name } nurse { id name } patient { id name } audit { createdAt } } }\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/graphql",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find All Consultation",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{vault:json-web-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"query { findAllConsultations { id patientReport consultationDate medic { id name email } nurse { id name email } patient { id name email } audit { createdAt updatedAt } } }\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/graphql",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find Consultation By Id",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{vault:json-web-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"query { consultationById(id: \\\"1\\\") { id patientReport consultationDate } }\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/graphql",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Consultation By Id",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{vault:json-web-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"mutation { updateConsultation(id: \\\"1\\\", dto: { patientReport: \\\"Novo relatório\\\", consultationDate: \\\"2024-09-21T11:00:00\\\" }) { id patientReport consultationDate } }\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/graphql",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						}
 					]
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Nurse Test",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+			"name": "Endpoints - PATIENT",
+			"item": [
+				{
+					"name": "Registration/Login",
+					"item": [
 						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJUZWNoSGVhbHRoIEFQSSIsImlhdCI6MTc1NjM5NzA2OCwiZXhwIjoxNzU2NDA0MjY4LCJzdWIiOiJzZXVAZW1haWwuY29tIn0._1_6xCJ1D_CSvw23Jdw7rJoPClGl4r48powFFOdmwz0",
-							"type": "string"
+							"name": "Register Patient",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Paciente Beltrano\",\r\n  \"userName\": \"patient\",\r\n  \"email\": \"patient@email.com\",\r\n  \"password\": \"sua_senha\",\r\n  \"address\": {\r\n    \"cep\": \"12345678\",\r\n    \"street\": \"Rua Exemplo\",\r\n    \"number\": \"123\",\r\n    \"neighborhood\": \"Bairro\",\r\n    \"city\": \"Cidade\",\r\n    \"state\": \"Estado\",\r\n    \"country\": \"País\"\r\n  },\r\n  \"role\": \"PATIENT\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/api/auth/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login Patient",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{vault:bearer-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"patient@email.com\",\r\n  \"password\": \"sua_senha\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/api/auth/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8090/api/test/nurse",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"test",
-						"nurse"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Patient Test",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+				{
+					"name": "Consultation",
+					"item": [
 						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJUZWNoSGVhbHRoIEFQSSIsImlhdCI6MTc1NjM5NzA2OCwiZXhwIjoxNzU2NDA0MjY4LCJzdWIiOiJzZXVAZW1haWwuY29tIn0._1_6xCJ1D_CSvw23Jdw7rJoPClGl4r48powFFOdmwz0",
-							"type": "string"
+							"name": "Find All My Consultations",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{vault:json-web-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"query FindAllMyConsultations { findAllMyConsultations { id patientReport consultationDate medic { id name email } nurse { id name email } patient { id name email } } }\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/graphql",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find My Consultation By Id",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{vault:json-web-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"query FindMyConsultationById($id: ID!) { findMyConsultationById(id: $id) { id patientReport consultationDate medic { id name email } nurse { id name email } patient { id name email } } }\",\r\n  \"variables\": {\r\n    \"id\": \"1\"\r\n  }\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/graphql",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find My Future Consultations",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{vault:json-web-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"query FindMyFutureConsultations { findMyFutureConsultations { id patientReport consultationDate medic { id name email } nurse { id name email } patient { id name email } } }\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/graphql",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
 						}
 					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8090/api/test/patient",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"test",
-						"patient"
-					]
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "Buscar usuário por ID (DOCTOR)",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJUZWNoSGVhbHRoIEFQSSIsImlhdCI6MTc1NjM5NzA2OCwiZXhwIjoxNzU2NDA0MjY4LCJzdWIiOiJzZXVAZW1haWwuY29tIn0._1_6xCJ1D_CSvw23Jdw7rJoPClGl4r48powFFOdmwz0",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8090/api/user/find-by-id/1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"user",
-						"find-by-id",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Listar todos usuários",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJUZWNoSGVhbHRoIEFQSSIsImlhdCI6MTc1NjM5NzA2OCwiZXhwIjoxNzU2NDA0MjY4LCJzdWIiOiJzZXVAZW1haWwuY29tIn0._1_6xCJ1D_CSvw23Jdw7rJoPClGl4r48powFFOdmwz0",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8090/api/user/find-all",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"user",
-						"find-all"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Deletar usuário por ID (DOCTOR)",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJUZWNoSGVhbHRoIEFQSSIsImlhdCI6MTc1NjM5NzA2OCwiZXhwIjoxNzU2NDA0MjY4LCJzdWIiOiJzZXVAZW1haWwuY29tIn0._1_6xCJ1D_CSvw23Jdw7rJoPClGl4r48powFFOdmwz0",
-							"type": "string"
-						}
-					]
-				},
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8090/api/user/delete/{idUser}",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"user",
-						"delete",
-						"{idUser}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Atualizar usuário por ID (DOCTOR)",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJUZWNoSGVhbHRoIEFQSSIsImlhdCI6MTc1NjM5NzA2OCwiZXhwIjoxNzU2NDA0MjY4LCJzdWIiOiJzZXVAZW1haWwuY29tIn0._1_6xCJ1D_CSvw23Jdw7rJoPClGl4r48powFFOdmwz0",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PATCH",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8090/api/user/update/{idUser}",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"api",
-						"user",
-						"update",
-						"{idUser}"
-					]
-				}
-			},
-			"response": []
+			]
 		}
-	],
-	"auth": {
-		"type": "bearer",
-		"bearer": [
-			{
-				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJUZWNoSGVhbHRoIEFQSSIsImlhdCI6MTc1NjM5NzA2OCwiZXhwIjoxNzU2NDA0MjY4LCJzdWIiOiJzZXVAZW1haWwuY29tIn0._1_6xCJ1D_CSvw23Jdw7rJoPClGl4r48powFFOdmwz0",
-				"type": "string"
-			}
-		]
-	}
+	]
 }

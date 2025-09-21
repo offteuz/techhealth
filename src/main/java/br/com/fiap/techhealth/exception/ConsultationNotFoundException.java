@@ -1,6 +1,6 @@
 package br.com.fiap.techhealth.exception;
 
-public class ConsultationNotFoundException extends RuntimeException{
+public class ConsultationNotFoundException extends RuntimeException {
 
     public ConsultationNotFoundException(String message) {
         super(message);

@@ -1,8 +1,8 @@
 package br.com.fiap.techhealth.domain.service;
 
-import br.com.fiap.techhealth.infraestructure.security.service.UserDetailsImpl;
 import br.com.fiap.techhealth.exception.GenerateTokenErrorException;
 import br.com.fiap.techhealth.exception.ValidateTokenErrorException;
+import br.com.fiap.techhealth.infraestructure.security.service.UserDetailsImpl;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -29,7 +29,7 @@ public class JwtTokenService {
                     .withExpiresAt(expirationDate())
                     .withSubject(user.getUsername())
                     .sign(algorithm);
-        } catch (JWTCreationException exception){
+        } catch (JWTCreationException exception) {
             throw new GenerateTokenErrorException("Ocorreu um erro ao GERAR o token. Verifique!");
         }
     }
@@ -42,7 +42,7 @@ public class JwtTokenService {
                     .build()
                     .verify(token)
                     .getSubject();
-        } catch (JWTVerificationException exception){
+        } catch (JWTVerificationException exception) {
             throw new ValidateTokenErrorException("Token inválido ou expirado.");
         }
     }

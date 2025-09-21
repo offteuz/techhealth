@@ -195,6 +195,7 @@ techhealth/
 - Francisco Aurizelio de Sousa ([GitHub](https://github.com/faurizel))
 - Lucas Herculano Amaro ([GitHub](https://github.com/LucasHerculanoAmaro))
 - Matheus Jesus de Souza ([GitHub](https://github.com/offteuz))
+- Vitor Silva França (vitorsilvafranca.com)
 
 ---
 

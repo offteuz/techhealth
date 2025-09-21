@@ -1,0 +1,18 @@
+type Query {
+    consultationByPatient(patientId: ID!): [ConsultationResponse!]!
+    getConsultationsForPatient: [ConsultationResponse!]!
+    futureConsultations(patientId: ID!): [ConsultationResponse!]!
+    consultationById(id: ID!): ConsultationResponse
+    findAllConsultations: [ConsultationResponse!]!
+    findAllMyConsultations: [ConsultationResponse!]!
+    findMyConsultationById(id: ID!): ConsultationResponse
+    findMyFutureConsultations: [ConsultationResponse!]!
+    findPastConsultationsByDoctor(patientId: ID!): [ConsultationResponse!]!
+    findFutureConsultationsByDoctor(patientId: ID!): [ConsultationResponse!]!
+}
+
+type Mutation {
+    createConsultation(dto: ConsultationRequest!): ConsultationResponse!
+    updateConsultation(id: ID!, dto: ConsultationUpdateRequest!): ConsultationResponse!
+    deleteConsultation(id: ID!): Boolean
+}

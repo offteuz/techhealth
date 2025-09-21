@@ -1,0 +1,51 @@
+scalar LocalDateTime
+
+type UserResponse {
+    id: ID!
+    name: String!
+    userName: String!
+    email: String!
+    address: Address
+    role: String!
+    audit: Audit
+}
+
+type Address {
+    cep: String!
+    street: String!
+    number: String!
+    neighborhood: String!
+    city: String!
+    state: String!
+    country: String!
+}
+
+type Audit {
+    createdBy: String
+    createdAt: LocalDateTime
+    updatedBy: String
+    updatedAt: LocalDateTime
+}
+
+type ConsultationResponse {
+    id: ID!
+    patientReport: String!
+    consultationDate: LocalDateTime!
+    medic: UserResponse!
+    nurse: UserResponse!
+    patient: UserResponse!
+    audit: Audit
+}
+
+input ConsultationRequest {
+    idPatient: ID!
+    idMedic: ID!
+    idNurse: ID!
+    patientReport: String!
+    consultationDate: LocalDateTime!
+}
+
+input ConsultationUpdateRequest {
+    patientReport: String
+    consultationDate: LocalDateTime
+}

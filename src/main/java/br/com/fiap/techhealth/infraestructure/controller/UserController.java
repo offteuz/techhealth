@@ -1,9 +1,7 @@
 package br.com.fiap.techhealth.infraestructure.controller;
 
-import br.com.fiap.techhealth.application.dto.request.UserRequestDTO;
 import br.com.fiap.techhealth.application.dto.response.UserResponseDTO;
 import br.com.fiap.techhealth.domain.service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +29,7 @@ public class UserController {
         return userService.findAll();
     }
 
-    @DeleteMapping("/user/delete/{idUser}")
+/*    @DeleteMapping("/user/delete/{idUser}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long idUser) {
         userService.delete(idUser);
@@ -41,5 +39,5 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserResponseDTO update(@PathVariable Long idUser, @Valid @RequestBody UserRequestDTO dto) {
         return userService.update(idUser, dto);
-    }
+    }*/
 }

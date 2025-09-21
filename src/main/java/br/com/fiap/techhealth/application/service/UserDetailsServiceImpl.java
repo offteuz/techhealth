@@ -1,9 +1,9 @@
 package br.com.fiap.techhealth.application.service;
 
 import br.com.fiap.techhealth.domain.model.User;
-import br.com.fiap.techhealth.infraestructure.security.service.UserDetailsImpl;
 import br.com.fiap.techhealth.domain.repository.UserRepository;
 import br.com.fiap.techhealth.exception.UserNotFoundException;
+import br.com.fiap.techhealth.infraestructure.security.service.UserDetailsImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

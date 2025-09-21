@@ -1,6 +1,5 @@
 package br.com.fiap.techhealth.infraestructure.security.service;
 
-import br.com.fiap.techhealth.domain.model.Role;
 import br.com.fiap.techhealth.domain.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,18 +22,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.user.getRole().equals(Role.DOCTOR)) {
-            return List.of(
-                    new SimpleGrantedAuthority("ROLE_DOCTOR"),
-                    new SimpleGrantedAuthority("ROLE_NURSE"),
-                    new SimpleGrantedAuthority("ROLE_PATIENT")
-            );
-        } else if (this.user.getRole().equals(Role.NURSE)) {
-            return List.of(
-                    new SimpleGrantedAuthority("ROLE_NURSE"),
-                    new SimpleGrantedAuthority("ROLE_PATIENT")
-            );
-        } else return List.of(new SimpleGrantedAuthority("ROLE_PATIENT"));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
     }
 
     @Override

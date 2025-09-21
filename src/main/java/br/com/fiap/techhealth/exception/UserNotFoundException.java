@@ -1,6 +1,6 @@
 package br.com.fiap.techhealth.exception;
 
-public class UserNotFoundException extends RuntimeException{
+public class UserNotFoundException extends RuntimeException {
 
     public UserNotFoundException() {
         super("Usuário não encontrado. Verifique!");

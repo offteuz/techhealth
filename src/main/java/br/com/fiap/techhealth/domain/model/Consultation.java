@@ -56,6 +56,10 @@ public class Consultation {
             foreignKey = @ForeignKey(name = "fk_consultation_patient"))
     private User patient;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private ConsultationStatus status;
+
     @Embedded
     private Audit audit = new Audit();
 

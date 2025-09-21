@@ -49,7 +49,7 @@ public class AuthController {
         authService.registerUser(dto);
     }
 
-    @GetMapping("/test")
+    /*@GetMapping("/test")
     public ResponseEntity<String> getAuthenticationTest() {
         return new ResponseEntity<>("Autenticado com sucesso", HttpStatus.OK);
     }
@@ -67,5 +67,5 @@ public class AuthController {
     @GetMapping("/test/patient")
     public ResponseEntity<String> getPatientAuthenticationTest() {
         return new ResponseEntity<>("Paciente autenticado com sucesso", HttpStatus.OK);
-    }
+    }*/
 }

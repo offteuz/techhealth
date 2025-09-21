@@ -11,8 +11,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.Instant;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,13 +24,13 @@ public class Audit {
 
     @CreatedDate
     @Column(updatable = false)
-    private Instant createdIn;
+    private String createdIn;
 
     @LastModifiedBy
     private String lastModifiedBy;
 
     @LastModifiedDate
-    private Instant lastModifiedIn;
+    private String lastModifiedIn;
 
     @Override
     public String toString() {

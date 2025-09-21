@@ -6,7 +6,7 @@ import br.com.fiap.techhealth.domain.model.Consultation;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",
-        uses = {UserMapperHelper.class},
+        uses = {UserMapperHelper.class, AuditMapper.class,},
         unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface ConsultationMapper {
 
@@ -14,8 +14,10 @@ public interface ConsultationMapper {
     @Mapping(source = "idMedic", target = "medic")
     @Mapping(source = "idNurse", target = "nurse")
     @Mapping(source = "idPatient", target = "patient")
-    Consultation toModel (ConsultationRequestDTO dto);
+    @Mapping(source = "consultationDate", target = "consultationDate")
+    Consultation toModel(ConsultationRequestDTO dto);
 
+    @Mapping(source = "consultationDate", target = "consultationDate")
     ConsultationResponseDTO toResponseDTO(Consultation consultation);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
