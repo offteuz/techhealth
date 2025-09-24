@@ -1,6 +1,6 @@
 # 🩺 TechHealth
 
-Sistema de gerenciamento de usuários para área da saúde, com autenticação JWT, integração com PostgreSQL e administração via pgAdmin.
+Sistema de gerenciamento de usuários para área da saúde, com autenticação JWT, integração com PostgreSQL, administração via pgAdmin, agendamento de consultas, histórico de pacientes e envio de notificações automáticas via Kafka.
 
 ---
 
@@ -15,6 +15,9 @@ Sistema de gerenciamento de usuários para área da saúde, com autenticação J
 - [📁 Estrutura do projeto](#-estrutura-do-projeto)
 - [🔑 Variáveis de ambiente](#-variáveis-de-ambiente)
 - [⚡ Configurações adicionais](#-configurações-adicionais)
+- [📦 Mensageria e Kafka](#-mensageria-e-kafka)
+- [🗂️ GraphQL](#-graphql)
+- [📄 Documentação técnica](#-documentação-técnica)
 
 ---
 
@@ -81,70 +84,67 @@ Acesse o pgAdmin com o email e senha definidos no `.env`.
 - **POST /api/auth/login**  
   Autentica e retorna um token JWT.
 
-### 🩺 Testes de autenticação
-
-- **GET /api/test**  
-  Qualquer usuário autenticado.
-- **GET /api/test/doctor**  
-  Apenas usuários com papel "DOCTOR".
-- **GET /api/test/nurse**  
-  Apenas usuários com papel "NURSE".
-- **GET /api/test/patient**  
-  Apenas usuários com papel "PATIENT".
-
 ### 👤 Usuários
 
 - **GET /api/user/find-by-id/{idUser}**  
-  Buscar usuário por ID (DOCTOR).
+  Buscar usuário por ID.
 - **GET /api/user/find-all**  
-  Listar todos usuários (DOCTOR, NURSE).
-- **DELETE /api/user/delete/{idUser}**  
-  Deletar usuário por ID (DOCTOR).
-- **PATCH /api/user/update/{idUser}**  
-  Atualizar usuário por ID (DOCTOR).
+  Listar todos usuários.
+
+### 🩺 Consultas (GraphQL)
+
+- **Mutation:** Criar, atualizar e remover consultas
+- **Query:** Buscar consultas por paciente, médico ou enfermeiro
+
+---
+
+## 📦 Mensageria e Kafka
+
+- Utiliza Kafka para comunicação assíncrona entre serviços.
+- Tópico principal: `consultation-topic`.
+- Mensagens publicadas ao criar/editar consultas, consumidas pelo serviço de notificações.
+
+Exemplo de payload:
+```json
+{
+  "id": 1,
+  "patientReport": "Relatório do paciente",
+  "consultationDate": "2024-09-20T10:00:00",
+  "medic": { "id": 1, "name": "Dr. Fulano" },
+  "nurse": { "id": 2, "name": "Enfermeira" },
+  "patient": { "id": 3, "name": "Paciente" },
+  "audit": { "createdAt": "2024-09-20T09:00:00" }
+}
+```
+
+---
+
+## 🗂️ GraphQL
+
+- Permite consultas flexíveis sobre histórico e agendamento de pacientes.
+- Queries e mutations disponíveis para médicos, enfermeiros e pacientes.
+
+Exemplo de mutation:
+```graphql
+mutation {
+  createConsultation(dto: { idPatient: "3", idMedic: "1", idNurse: "2", patientReport: "Relatório", consultationDate: "2024-09-20T10:00:00" }) {
+    id
+    patientReport
+    consultationDate
+    medic { id name }
+    nurse { id name }
+    patient { id name }
+    audit { createdAt }
+  }
+}
+```
 
 ---
 
 ## 🧪 Testando com Postman
 
-1. **Registrar usuário:**  
-   POST `http://localhost:8090/api/auth/register`  
-   Body (JSON):
-   ```json
-   {
-     "name": "Nome Completo",
-     "userName": "usuario",
-     "email": "seu@email.com",
-     "password": "sua_senha",
-     "address": {
-       "cep": "12345678",
-       "street": "Rua Exemplo",
-       "number": "123",
-       "neighborhood": "Bairro",
-       "city": "Cidade",
-       "state": "Estado",
-       "country": "País"
-     },
-     "role": "DOCTOR"
-   }
-   ```
-
-2. **Login:**  
-   POST `http://localhost:8090/api/auth/login`  
-   Body (JSON):
-   ```json
-   {
-     "email": "seu@email.com",
-     "password": "sua_senha"
-   }
-   ```
-   Copie o token JWT retornado.
-
-3. **Endpoints protegidos:**  
-   Adicione o header:
-   ```
-   Authorization: Bearer SEU_TOKEN
-   ```
+- Coleção Postman disponível em `postman/Tech Health Collection.postman_collection.json`.
+- Testes de autenticação, consultas, permissões e fluxos completos.
 
 ---
 
@@ -157,7 +157,8 @@ techhealth/
 │   └── application.properties # Configurações do backend
 ├── .env                      # Variáveis de ambiente para Docker
 ├── docker-compose.yaml       # Orquestração dos containers PostgreSQL e pgAdmin
-└── README.md                 # Documentação do projeto
+├── README.md                 # Guia rápido do projeto
+└── documentation.md          # Documentação técnica detalhada
 ```
 
 ---
@@ -181,11 +182,9 @@ techhealth/
 
 ---
 
-## 💡 Observações
+## 📄 Documentação técnica
 
-- Certifique-se de que o JDK 21 está instalado e configurado.
-- O banco de dados deve estar rodando antes de iniciar o backend.
-- Para dúvidas sobre rotas, consulte os controllers do projeto.
+- Para detalhes completos de arquitetura, segurança, endpoints, mensageria e testes, consulte o arquivo `documentation.md`.
 
 ---
 
