@@ -53,22 +53,8 @@ Os endpoints de autenticação são públicos, enquanto os demais exigem token J
 Optamos pelo GraphQL para consultas flexíveis sobre o histórico de pacientes e agendamento de consultas. As queries e mutations permitem, por exemplo:
 - Buscar todas as consultas de um paciente.
 - Registrar novas consultas (médicos/enfermeiros).
-- Atualizar ou remover consultas.
-
-Exemplo de mutation para criar uma consulta:
-```graphql
-mutation {
-  createConsultation(dto: { idPatient: "3", idMedic: "1", idNurse: "2", patientReport: "Relatório", consultationDate: "2024-09-20T10:00:00" }) {
-    id
-    patientReport
-    consultationDate
-    medic { id name }
-    nurse { id name }
-    patient { id name }
-    audit { createdAt }
-  }
-}
-```
+- Atualizar consultas.
+Para exemplos completos de payloads (request/response) e permissões, consulte a seção 5.1.
 
 ## 6. Mensageria (Kafka)
 
@@ -169,4 +155,289 @@ Exemplo de requisição GraphQL:
 
 ---
 
-> Todo o projeto foi pensado para ser didático, seguro e fácil de evoluir. Qualquer dúvida, consulte os arquivos de código ou a coleção Postman incluída.
+
+### 5.1 Operações de Consultas por Perfil (GraphQL)
+
+Todas as operações abaixo estão disponíveis no endpoint `/graphql` (ver configuração em `spring.graphql.path`). Os exemplos usam os tipos definidos no schema (`src/main/resources/graphql/schema.graphqls`) e refletem as permissões aplicadas no resolver (`ConsultationGraphQLController`).
+
+- **Mensagem e notificações por e‑mail**: após criar ou atualizar uma consulta, o serviço publica um evento no Kafka e o serviço de mensageria envia um e‑mail usando o servidor SMTP fake configurado em `localhost:1025`.
+
+#### Paciente (PATIENT)
+
+- **consultationByPatient**
+  - **Descrição**: obtém os detalhes de uma consulta do próprio paciente por ID.
+  - **Permissão**: PATIENT
+  - **Request**:
+    ```graphql
+    query {
+      consultationByPatient(idConsultation: 10) {
+        id
+        patientReport
+        consultationDate
+        medic { id name }
+        nurse { id name }
+        patient { id name }
+        audit { createdAt updatedAt }
+      }
+    }
+    ```
+  - **Response**:
+    ```json
+    {
+      "data": {
+        "consultationByPatient": {
+          "id": "10",
+          "patientReport": "Dores de cabeça recorrentes",
+          "consultationDate": "2024-09-20T10:00:00",
+          "medic": { "id": "1", "name": "Dr. Fulano" },
+          "nurse": { "id": "2", "name": "Enfermeira Beltrana" },
+          "patient": { "id": "3", "name": "Paciente Silva" },
+          "audit": { "createdAt": "2024-09-19T09:00:00", "updatedAt": null }
+        }
+      }
+    }
+    ```
+
+- **getConsultationsForPatient**
+  - **Descrição**: lista todas as consultas do paciente autenticado.
+  - **Permissão**: PATIENT
+  - **Request**:
+    ```graphql
+    query {
+      getConsultationsForPatient {
+        id
+        consultationDate
+        medic { id name }
+        nurse { id name }
+      }
+    }
+    ```
+  - **Response (resumo)**:
+    ```json
+    { "data": { "getConsultationsForPatient": [ { "id": "10", "consultationDate": "2024-09-20T10:00:00", "medic": { "id": "1", "name": "Dr. Fulano" }, "nurse": { "id": "2", "name": "Enfermeira Beltrana" } } ] } }
+    ```
+
+- **findAllMyConsultations**
+  - **Descrição**: sinônimo de lista de consultas do próprio paciente.
+  - **Permissão**: PATIENT
+
+- **findMyConsultationById**
+  - **Descrição**: obtém uma consulta específica do próprio paciente por ID.
+  - **Permissão**: PATIENT
+
+- **findMyFutureConsultations**
+  - **Descrição**: lista as consultas futuras do próprio paciente.
+  - **Permissão**: PATIENT
+
+- **futureConsultations(patientId)**
+  - **Descrição**: lista consultas futuras para um `patientId` informado.
+  - **Permissão**: PATIENT, DOCTOR, NURSE
+
+Observação: o acesso do paciente é restrito ao próprio contexto; controles adicionais são aplicados no serviço para garantir que um paciente não visualize dados de terceiros.
+
+#### Médico (DOCTOR)
+
+- **findAllConsultations**
+  - **Descrição**: lista todas as consultas do sistema.
+  - **Permissão**: DOCTOR, NURSE
+  - **Request**:
+    ```graphql
+    query {
+      findAllConsultations {
+        id
+        patientReport
+        consultationDate
+        medic { id name }
+        nurse { id name }
+        patient { id name }
+      }
+    }
+    ```
+  - **Response (resumo)**:
+    ```json
+    { "data": { "findAllConsultations": [ { "id": "10", "patientReport": "Dores de cabeça", "consultationDate": "2024-09-20T10:00:00", "medic": { "id": "1", "name": "Dr. Fulano" }, "nurse": { "id": "2", "name": "Enfermeira" }, "patient": { "id": "3", "name": "Paciente" } } ] } }
+    ```
+
+- **consultationById(id)**
+  - **Descrição**: obtém detalhes de uma consulta por ID.
+  - **Permissão**: DOCTOR, NURSE
+
+- **findPastConsultationsByDoctor(patientId)**
+  - **Descrição**: lista as consultas passadas daquele paciente, para uso do médico.
+  - **Permissão**: DOCTOR
+
+- **findFutureConsultationsByDoctor(patientId)**
+  - **Descrição**: lista as consultas futuras daquele paciente, para uso do médico.
+  - **Permissão**: DOCTOR
+
+- **futureConsultations(patientId)**
+  - **Descrição**: lista as consultas futuras para um paciente específico.
+  - **Permissão**: PATIENT, DOCTOR, NURSE
+
+- **createConsultation(dto: ConsultationRequest)**
+  - **Descrição**: cria uma nova consulta (gera evento e dispara e‑mail via SMTP fake na porta 1025).
+  - **Permissão**: DOCTOR, NURSE
+  - **Request**:
+    ```graphql
+    mutation {
+      createConsultation(
+        dto: {
+          idPatient: "3"
+          idMedic: "1"
+          idNurse: "2"
+          patientReport: "Retorno de exame"
+          consultationDate: "2024-10-15T14:30:00"
+        }
+      ) {
+        id
+        patientReport
+        consultationDate
+        medic { id name }
+        nurse { id name }
+        patient { id name }
+        audit { createdAt }
+      }
+    }
+    ```
+  - **Response**:
+    ```json
+    {
+      "data": {
+        "createConsultation": {
+          "id": "42",
+          "patientReport": "Retorno de exame",
+          "consultationDate": "2024-10-15T14:30:00",
+          "medic": { "id": "1", "name": "Dr. Fulano" },
+          "nurse": { "id": "2", "name": "Enfermeira" },
+          "patient": { "id": "3", "name": "Paciente" },
+          "audit": { "createdAt": "2024-10-10T09:00:00" }
+        }
+      }
+    }
+    ```
+
+- **updateConsultation(id, dto: ConsultationUpdateRequest)**
+  - **Descrição**: atualiza campos da consulta (ex.: `patientReport`, `consultationDate`).
+  - **Permissão**: DOCTOR, NURSE
+  - **Request**:
+    ```graphql
+    mutation {
+      updateConsultation(
+        id: 42,
+        dto: { patientReport: "Ajuste de prescrição", consultationDate: "2024-10-20T09:00:00" }
+      ) {
+        id
+        patientReport
+        consultationDate
+        audit { updatedAt }
+      }
+    }
+    ```
+  - **Response**:
+    ```json
+    { "data": { "updateConsultation": { "id": "42", "patientReport": "Ajuste de prescrição", "consultationDate": "2024-10-20T09:00:00", "audit": { "updatedAt": "2024-10-12T11:00:00" } } } }
+    ```
+
+#### Enfermeiro (NURSE)
+
+- **findAllConsultations**
+  - **Descrição**: lista todas as consultas do sistema.
+  - **Permissão**: DOCTOR, NURSE
+
+- **consultationById(id)**
+  - **Descrição**: obtém detalhes de uma consulta por ID.
+  - **Permissão**: DOCTOR, NURSE
+
+- **futureConsultations(patientId)**
+  - **Descrição**: lista consultas futuras para um paciente específico.
+  - **Permissão**: PATIENT, DOCTOR, NURSE
+
+- **createConsultation(dto: ConsultationRequest)**
+  - **Descrição**: cria uma nova consulta (gera evento e dispara e‑mail via SMTP fake na porta 1025).
+  - **Permissão**: DOCTOR, NURSE
+
+- **updateConsultation(id, dto: ConsultationUpdateRequest)**
+  - **Descrição**: atualiza os dados de uma consulta.
+  - **Permissão**: DOCTOR, NURSE
+
+Notas:
+- Os exemplos acima são compatíveis com os tipos do schema GraphQL (`ConsultationRequest`, `ConsultationUpdateRequest`, `ConsultationResponse`).
+- O controle de autorização é aplicado via anotações como `@PreAuthorize` no `ConsultationGraphQLController`.
+- A interface GraphiQL está habilitada em `/graphiql` para facilitar os testes.
+
+### 5.2 Tabela de Permissões (Consultas - GraphQL)
+
+Todas as operações são expostas em `/graphql` e exigem autenticação via JWT. A tabela abaixo resume as permissões por Role conforme o resolver GraphQL:
+
+| Operação                                  | Descrição resumida                                             | PATIENT | DOCTOR | NURSE |
+|-------------------------------------------|----------------------------------------------------------------|:-------:|:------:|:-----:|
+| consultationByPatient                      | Detalhe de consulta do próprio paciente                        |   ✔    |   ✖    |   ✖   |
+| getConsultationsForPatient                 | Lista consultas do próprio paciente                            |   ✔    |   ✖    |   ✖   |
+| findAllMyConsultations                     | Lista todas as consultas do próprio paciente                   |   ✔    |   ✖    |   ✖   |
+| findMyConsultationById                     | Detalhe de consulta do próprio paciente por ID                 |   ✔    |   ✖    |   ✖   |
+| findMyFutureConsultations                  | Lista futuras do próprio paciente                              |   ✔    |   ✖    |   ✖   |
+| futureConsultations(patientId)             | Lista futuras para um paciente específico                      |   ✔    |   ✔    |   ✔   |
+| consultationById                           | Detalhe de consulta por ID                                     |   ✖    |   ✔    |   ✔   |
+| findAllConsultations                       | Lista todas as consultas                                       |   ✖    |   ✔    |   ✔   |
+| findPastConsultationsByDoctor(patientId)   | Lista passadas de um paciente (visão do médico)                |   ✖    |   ✔    |   ✖   |
+| findFutureConsultationsByDoctor(patientId) | Lista futuras de um paciente (visão do médico)                 |   ✖    |   ✔    |   ✖   |
+| createConsultation(dto)                    | Cria consulta                                                  |   ✖    |   ✔    |   ✔   |
+| updateConsultation(id, dto)                | Atualiza consulta                                              |   ✖    |   ✔    |   ✔   |
+
+Observações:
+- As permissões acima são definidas por `@PreAuthorize` no `ConsultationGraphQLController`.
+- A mutation `deleteConsultation` existe no schema, mas não há implementação correspondente no controller no momento desta documentação.
+
+### 5.3 Fluxo completo: Agendamento → Kafka → E‑mail
+
+Este fluxo ocorre quando uma consulta é criada ou atualizada via GraphQL. Resumo das etapas:
+
+1. **Agendamento (GraphQL em `/graphql`)**
+   - Chamada à mutation `createConsultation(dto: ConsultationRequest!)` ou `updateConsultation(id, dto)`.
+   - Exemplo de criação:
+     ```graphql
+     mutation {
+       createConsultation(
+         dto: {
+           idPatient: "3"
+           idMedic: "1"
+           idNurse: "2"
+           patientReport: "Retorno de exame"
+           consultationDate: "2024-10-15T14:30:00"
+         }
+       ) {
+         id
+         consultationDate
+         patient { id name email }
+         medic { id name }
+       }
+     }
+     ```
+
+2. **Publicação no Kafka**
+   - O serviço de domínio persiste a consulta e publica o DTO no tópico `consultation-topic`.
+   - Estrutura típica do payload publicado:
+     ```json
+     {
+       "id": 42,
+       "patientReport": "Retorno de exame",
+       "consultationDate": "2024-10-15T14:30:00",
+       "medic": { "id": 1, "name": "Dr. Fulano" },
+       "nurse": { "id": 2, "name": "Enfermeira" },
+       "patient": { "id": 3, "name": "Paciente", "email": "paciente@exemplo.com" }
+     }
+     ```
+
+3. **Consumo e envio de e‑mail**
+   - O `NotificationService` consome do tópico `consultation-topic` e monta uma mensagem de confirmação.
+   - O `EmailService` envia o e‑mail usando o servidor SMTP fake em `localhost:1025`.
+   - Exemplo de conteúdo do e‑mail (HTML simplificado):
+     ```html
+     <h1>Olá, Paciente!</h1>
+     <p>Sua consulta com o(a) Dr(a). Fulano foi confirmada para: <strong>15/10/2024 às 14:30</strong>.</p>
+     ```
+
+4. **Observações operacionais**
+   - Broker Kafka esperado em `localhost:9092`.
+   - Para inspecionar as requisições GraphQL, utilize `/graphiql`.
+   - Todas as operações GraphQL estão disponíveis em `/graphql`.
