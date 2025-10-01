@@ -1,6 +1,6 @@
 # Tech Health - Documentação Completa
 
-## Introdução
+## 1. Introdução
 
 Este projeto foi desenvolvido como parte do Tech Challenge da fase 3 da FIAP, com o objetivo de criar uma solução robusta e segura para ambientes hospitalares dinâmicos e de comunicação assíncrona. Buscamos atender todos os requisitos do desafio, incluindo:
 - Autenticação e autorização com Spring Security, garantindo acesso controlado para médicos, enfermeiros e pacientes.
@@ -11,11 +11,11 @@ Este projeto foi desenvolvido como parte do Tech Challenge da fase 3 da FIAP, co
 
 A seguir, detalhamos cada aspecto do sistema, explicando as decisões técnicas e funcionais tomadas para garantir que o projeto esteja totalmente aderente ao edital e pronto para avaliação acadêmica.
 
-## 1. Visão Geral do Projeto
+## 2. Visão Geral do Projeto
 
 O Tech Health nasceu da necessidade de tornar o ambiente hospitalar mais eficiente e seguro. Desde o início, nosso objetivo foi criar um backend modular que permitisse agendar consultas, gerenciar históricos de pacientes e enviar lembretes automáticos, tudo isso respeitando os diferentes perfis de acesso: médicos, enfermeiros e pacientes. A escolha das tecnologias (Spring Boot, Kafka, GraphQL, Docker, etc.) foi feita para garantir escalabilidade, segurança e facilidade de integração.
 
-## 2. Arquitetura
+## 3. Arquitetura
 
 Estruturamos o projeto para separar claramente responsabilidades e facilitar a manutenção. Abaixo, explicamos como cada parte foi pensada:
 
@@ -27,7 +27,7 @@ Estruturamos o projeto para separar claramente responsabilidades e facilitar a m
 
 A comunicação entre serviços é feita de forma assíncrona, usando Kafka. Por exemplo, ao agendar uma consulta, uma mensagem é enviada para o serviço de notificações, que então dispara o lembrete ao paciente.
 
-## 3. Segurança
+## 4. Segurança
 
 Desde o início, a segurança foi prioridade. Implementamos autenticação JWT com Spring Security, garantindo que apenas usuários autenticados possam acessar funcionalidades sensíveis. Perfis de acesso foram definidos para médicos, enfermeiros e pacientes, cada um com permissões específicas:
 - Médicos: visualizam e editam históricos.
@@ -36,27 +36,24 @@ Desde o início, a segurança foi prioridade. Implementamos autenticação JWT c
 
 As permissões são controladas por roles e anotadas diretamente nos endpoints e resolvers GraphQL.
 
-## 4. Endpoints REST
+## 5. Endpoints REST
 
 A API REST foi desenhada para ser intuitiva e segura:
 - **Autenticação:**
   - `POST /api/auth/login`: Login e obtenção de token JWT.
   - `POST /api/auth/register`: Cadastro de novos usuários.
-- **Usuários:**
-  - `GET /api/user/find-by-id/{idUser}`: Busca por ID.
-  - `GET /api/user/find-all`: Lista todos os usuários.
 
 Os endpoints de autenticação são públicos, enquanto os demais exigem token JWT.
 
-## 5. GraphQL
+## 6. GraphQL
 
 Optamos pelo GraphQL para consultas flexíveis sobre o histórico de pacientes e agendamento de consultas. As queries e mutations permitem, por exemplo:
 - Buscar todas as consultas de um paciente.
 - Registrar novas consultas (médicos/enfermeiros).
 - Atualizar consultas.
-Para exemplos completos de payloads (request/response) e permissões, consulte a seção 5.1.
+Para exemplos completos de payloads (request/response) e permissões, consulte a seção 6.1.
 
-## 6. Mensageria (Kafka)
+## 7. Mensageria (Kafka)
 
 Para garantir que notificações sejam enviadas sem travar o fluxo principal, integramos Kafka. Sempre que uma consulta é criada ou editada, o serviço de agendamento publica uma mensagem no tópico `consultation-topic`. O serviço de notificações consome essa mensagem e envia o lembrete ao paciente.
 
@@ -73,15 +70,15 @@ Exemplo de payload enviado:
 }
 ```
 
-## 7. Execução
+## 8. Execução
 
-### Pré-requisitos
+## 8.1 Pré-requisitos
 - **JDK 21** instalado e configurado (`JAVA_HOME`)
 - **Docker** e **Docker Compose** instalados
 - **Maven** (ou use o wrapper `./mvnw`)
 - **Postman** (opcional, para testes)
 
-### Configuração do ambiente
+## 8.2 Configuração do ambiente
 1. Edite o arquivo `.env` na raiz do projeto com suas configurações:
     ```properties
     DB_PORT="5433"
@@ -93,7 +90,7 @@ Exemplo de payload enviado:
     ```
 2. O arquivo `application.properties` já está configurado para usar essas variáveis.
 
-### Subindo o banco de dados e pgAdmin
+## 8.3 Subindo o banco de dados e pgAdmin
 No terminal, execute:
 ```shell
 docker-compose up -d
@@ -102,7 +99,7 @@ docker-compose up -d
 - O pgAdmin ficará disponível em `http://localhost:5050`.
 Acesse o pgAdmin com o email e senha definidos no `.env`.
 
-### Rodando o backend
+## 8.4 Rodando o backend
 1. Certifique-se de estar usando o **JDK 21**.
 2. No terminal, execute:
     ```shell
@@ -114,10 +111,10 @@ Acesse o pgAdmin com o email e senha definidos no `.env`.
     ```
 3. O backend estará disponível em `http://localhost:8090`.
 
-### Estrutura do projeto
+## 8.5 Estrutura do projeto
 ```
 techhealth/
-├── src/main/java/...         # Código fonte Java (controllers, services, models)
+├── src/main/java pump/...         # Código fonte Java (controllers, services, models)
 ├── src/main/resources/
 │   └── application.properties # Configurações do backend
 ├── .env                      # Variáveis de ambiente para Docker
@@ -126,7 +123,7 @@ techhealth/
 └── documentation.md          # Documentação técnica detalhada
 ```
 
-### Variáveis de ambiente
+## 8.6 Variáveis de ambiente
 - **DB_PORT**: Porta do PostgreSQL
 - **PGADMIN_PORT**: Porta do pgAdmin
 - **DB_USERNAME**: Usuário do banco
@@ -134,12 +131,12 @@ techhealth/
 - **DB_NAME**: Nome do banco
 - **DB_EMAIL**: Email do pgAdmin
 
-### Observações
+## 8.7 Observações
 - Certifique-se de que o JDK 21 está instalado e configurado.
 - O banco de dados deve estar rodando antes de iniciar o backend.
 - Para dúvidas sobre rotas, consulte os controllers do projeto.
 
-## 8. Coleções de Teste (Postman)
+## 9. Coleções de Teste (Postman)
 
 Preparamos uma coleção Postman para facilitar os testes. Ela cobre:
 - Cadastro e login de usuários
@@ -153,16 +150,13 @@ Exemplo de requisição GraphQL:
 }
 ```
 
----
-
-
-### 5.1 Operações de Consultas por Perfil (GraphQL)
+## 10. Operações de Consultas por Perfil (GraphQL)
 
 Todas as operações abaixo estão disponíveis no endpoint `/graphql` (ver configuração em `spring.graphql.path`). Os exemplos usam os tipos definidos no schema (`src/main/resources/graphql/schema.graphqls`) e refletem as permissões aplicadas no resolver (`ConsultationGraphQLController`).
 
 - **Mensagem e notificações por e‑mail**: após criar ou atualizar uma consulta, o serviço publica um evento no Kafka e o serviço de mensageria envia um e‑mail usando o servidor SMTP fake configurado em `localhost:1025`.
 
-#### Paciente (PATIENT)
+## 10.1 Paciente (PATIENT)
 
 - **consultationByPatient**
   - **Descrição**: obtém os detalhes de uma consulta do próprio paciente por ID.
@@ -235,7 +229,7 @@ Todas as operações abaixo estão disponíveis no endpoint `/graphql` (ver conf
 
 Observação: o acesso do paciente é restrito ao próprio contexto; controles adicionais são aplicados no serviço para garantir que um paciente não visualize dados de terceiros.
 
-#### Médico (DOCTOR)
+## 10.2 Médico (DOCTOR)
 
 - **findAllConsultations**
   - **Descrição**: lista todas as consultas do sistema.
@@ -338,7 +332,7 @@ Observação: o acesso do paciente é restrito ao próprio contexto; controles a
     { "data": { "updateConsultation": { "id": "42", "patientReport": "Ajuste de prescrição", "consultationDate": "2024-10-20T09:00:00", "audit": { "updatedAt": "2024-10-12T11:00:00" } } } }
     ```
 
-#### Enfermeiro (NURSE)
+## 10.3 Enfermeiro (NURSE)
 
 - **findAllConsultations**
   - **Descrição**: lista todas as consultas do sistema.
@@ -365,7 +359,7 @@ Notas:
 - O controle de autorização é aplicado via anotações como `@PreAuthorize` no `ConsultationGraphQLController`.
 - A interface GraphiQL está habilitada em `/graphiql` para facilitar os testes.
 
-### 5.2 Tabela de Permissões (Consultas - GraphQL)
+## 10.4 Tabela de Permissões (Consultas - GraphQL)
 
 Todas as operações são expostas em `/graphql` e exigem autenticação via JWT. A tabela abaixo resume as permissões por Role conforme o resolver GraphQL:
 
@@ -388,11 +382,11 @@ Observações:
 - As permissões acima são definidas por `@PreAuthorize` no `ConsultationGraphQLController`.
 - A mutation `deleteConsultation` existe no schema, mas não há implementação correspondente no controller no momento desta documentação.
 
-### 5.3 Fluxo completo: Agendamento → Kafka → E‑mail
+## 10.5 Fluxo completo: Agendamento → Kafka → E‑mail
 
 Este fluxo ocorre quando uma consulta é criada ou atualizada via GraphQL. Resumo das etapas:
 
-1. **Agendamento (GraphQL em `/graphql`)**
+## 10.5.1. **Agendamento (GraphQL em `/graphql`)**
    - Chamada à mutation `createConsultation(dto: ConsultationRequest!)` ou `updateConsultation(id, dto)`.
    - Exemplo de criação:
      ```graphql
@@ -414,7 +408,7 @@ Este fluxo ocorre quando uma consulta é criada ou atualizada via GraphQL. Resum
      }
      ```
 
-2. **Publicação no Kafka**
+## 10.5.2. **Publicação no Kafka**
    - O serviço de domínio persiste a consulta e publica o DTO no tópico `consultation-topic`.
    - Estrutura típica do payload publicado:
      ```json
@@ -428,7 +422,7 @@ Este fluxo ocorre quando uma consulta é criada ou atualizada via GraphQL. Resum
      }
      ```
 
-3. **Consumo e envio de e‑mail**
+## 10.5.3. **Consumo e envio de e‑mail**
    - O `NotificationService` consome do tópico `consultation-topic` e monta uma mensagem de confirmação.
    - O `EmailService` envia o e‑mail usando o servidor SMTP fake em `localhost:1025`.
    - Exemplo de conteúdo do e‑mail (HTML simplificado):
@@ -437,7 +431,7 @@ Este fluxo ocorre quando uma consulta é criada ou atualizada via GraphQL. Resum
      <p>Sua consulta com o(a) Dr(a). Fulano foi confirmada para: <strong>15/10/2024 às 14:30</strong>.</p>
      ```
 
-4. **Observações operacionais**
+## 10.5.4. **Observações operacionais**
    - Broker Kafka esperado em `localhost:9092`.
    - Para inspecionar as requisições GraphQL, utilize `/graphiql`.
    - Todas as operações GraphQL estão disponíveis em `/graphql`.
