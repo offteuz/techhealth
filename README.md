@@ -84,13 +84,6 @@ Acesse o pgAdmin com o email e senha definidos no `.env`.
 - **POST /api/auth/login**  
   Autentica e retorna um token JWT.
 
-### 👤 Usuários
-
-- **GET /api/user/find-by-id/{idUser}**  
-  Buscar usuário por ID.
-- **GET /api/user/find-all**  
-  Listar todos usuários.
-
 ### 🩺 Consultas (GraphQL)
 
 - **Mutation:** Criar, atualizar e remover consultas
