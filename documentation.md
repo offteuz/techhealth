@@ -51,7 +51,7 @@ Optamos pelo GraphQL para consultas flexíveis sobre o histórico de pacientes e
 - Buscar todas as consultas de um paciente.
 - Registrar novas consultas (médicos/enfermeiros).
 - Atualizar consultas.
-Para exemplos completos de payloads (request/response) e permissões, consulte a seção 6.1.
+Para exemplos completos de payloads (request/response) e permissões, consulte as seções 10.1, 10.2, 10.3 e 10.4.
 
 ## 7. Mensageria (Kafka)
 
