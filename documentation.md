@@ -431,7 +431,35 @@ Este fluxo ocorre quando uma consulta é criada ou atualizada via GraphQL. Resum
      <p>Sua consulta com o(a) Dr(a). Fulano foi confirmada para: <strong>15/10/2024 às 14:30</strong>.</p>
      ```
 
-## 10.5.4. **Observações operacionais**
+
+## 10.5.4. Envio de E-mails Fake para Testes
+
+O sistema envia notificações por e-mail para pacientes após o agendamento ou atualização de consultas. Para facilitar testes em ambiente de desenvolvimento, utilizamos um servidor SMTP fake rodando localmente na porta `1025`. Isso permite visualizar os e-mails enviados sem utilizar serviços reais de e-mail.
+
+### Configuração
+
+No arquivo `application.properties`, as seguintes propriedades garantem o uso do SMTP fake:
+
+```properties
+spring.mail.host=localhost
+spring.mail.port=1025
+spring.mail.username=
+spring.mail.password=
+spring.mail.properties.mail.smtp.auth=false
+```
+
+Recomenda-se utilizar ferramentas como [MailHog](https://github.com/mailhog/MailHog) ou [FakeSMTP](https://nilhcem.com/FakeSMTP/) para capturar e visualizar os e-mails enviados durante os testes. Basta subir o serviço SMTP fake (por exemplo, via Docker) e acessar a interface web para visualizar as mensagens.
+
+### Funcionamento
+
+- Sempre que uma consulta é criada ou atualizada, o serviço de notificações dispara um e-mail para o paciente usando o servidor SMTP fake.
+- Nenhum e-mail real é enviado; todos os e-mails podem ser visualizados na interface do MailHog/FakeSMTP.
+
+### Observação
+
+Para produção, altere as configurações do SMTP para um serviço de e-mail real e seguro.
+
+## 11. **Observações operacionais**
    - Broker Kafka esperado em `localhost:9092`.
    - Para inspecionar as requisições GraphQL, utilize `/graphiql`.
    - Todas as operações GraphQL estão disponíveis em `/graphql`.
