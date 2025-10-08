@@ -143,7 +143,10 @@ Preparamos uma coleção Postman para facilitar os testes. Ela cobre:
 - Criação, busca, atualização e remoção de consultas via GraphQL
 - Testes de permissões e fluxos completos
 
-Abra o Postman e importe o arquivo "postman/Tech Health Collection.postman_collection.json" localizado na pasta raiz do projeto.
+- Abra o Postman e importe o arquivo "postman/Tech Health Collection.postman_collection.json" localizado na pasta raiz do projeto.
+- Também disponível como anexo no arquivo PDF enviado junto à documentação.
+
+
 Exemplo de requisição GraphQL:
 
 ```json
