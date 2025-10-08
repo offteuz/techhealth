@@ -143,7 +143,9 @@ Preparamos uma coleção Postman para facilitar os testes. Ela cobre:
 - Criação, busca, atualização e remoção de consultas via GraphQL
 - Testes de permissões e fluxos completos
 
+Abra o Postman e importe o arquivo "postman/Tech Health Collection.postman_collection.json" localizado na pasta raiz do projeto.
 Exemplo de requisição GraphQL:
+
 ```json
 {
   "query": "mutation { createConsultation(dto: { idPatient: \"3\", idMedic: \"1\", idNurse: \"2\", patientReport: \"Relatório\", consultationDate: \"2024-09-20T10:00:00\" }) { id patientReport consultationDate medic { id name } nurse { id name } patient { id name } audit { createdAt } } }"
